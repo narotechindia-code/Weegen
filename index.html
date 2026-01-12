@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Aggressive SEO Tags -->
+    <title>WeeGen - Ultimate Web Shortcut Generator</title>
+    <meta name="description" content="Create standalone, dependency-free HTML web shortcuts with WeeGen. Features password protection, custom styling, SEO metadata, and bulk generation.">
+    <meta name="keywords" content="html generator, web shortcut, url redirector, self-contained html, link shortener alternative, bulk url generator, weegen">
+    <meta name="author" content="NaroTech India">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#4f46e5">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://narotech.netlify.app/weegen">
+    <meta property="og:title" content="WeeGen - Professional HTML Shortcut Generator">
+    <meta property="og:description" content="Generate customizable, secure, and fast HTML redirect files instantly.">
+    <meta property="og:image" content="https://www.w3.org/html/logo/downloads/HTML5_Logo_512.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="WeeGen - Professional HTML Shortcut Generator">
+    <meta property="twitter:description" content="Generate customizable, secure, and fast HTML redirect files instantly.">
+    
+    <!-- SVG Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%234f46e5%22/><path d=%22M30 30 L50 70 L70 30%22 stroke=%22white%22 stroke-width=%228%22 fill=%22none%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/></svg>">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: { 850: '#151e32' }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Montserrat Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Dark Theme (Default) */
+            --bg-body: #0f172a;
+            --bg-panel: #1e293b;
+            --border-panel: #334155;
+            --input-bg: #0f172a;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+        }
+
+        /* Light Theme Overrides */
+        html:not(.dark) {
+            --bg-body: #f8fafc;
+            --bg-panel: #ffffff;
+            --border-panel: #e2e8f0;
+            --input-bg: #f1f5f9;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+        }
+
+        body, input, button, label, h1, h2, p, a, div, span, textarea, select, th, td {
+            font-family: 'Montserrat', sans-serif !important;
+        }
+        
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        /* Themed Panels */
+        .static-panel {
+            background-color: var(--bg-panel);
+            border: 1px solid var(--border-panel);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        
+        .static-input {
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-panel);
+            color: var(--text-main);
+            transition: all 0.3s ease;
+        }
+        
+        .static-input:focus {
+            border-color: #6366f1; /* Indigo 500 */
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-body); }
+        ::-webkit-scrollbar-thumb { background: var(--border-panel); border-radius: 4px; }
+
+        /* Tab Active State */
+        .tab-active {
+            background-color: #4f46e5;
+            color: white;
+            border-color: #4f46e5;
+        }
+        .tab-inactive {
+            background-color: transparent;
+            color: var(--text-muted);
+            border-color: var(--border-panel);
+        }
+        .tab-inactive:hover {
+            color: var(--text-main);
+            background-color: var(--bg-panel);
+        }
+
+        /* Modal Animation */
+        .modal-enter { animation: modalFadeIn 0.2s ease-out forwards; }
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="min-h-screen relative overflow-x-hidden pb-20">
+
+    <!-- Navigation/Header -->
+    <nav class="w-full max-w-6xl mx-auto p-6 flex items-center justify-between mb-4">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+            </div>
+            <h1 class="text-3xl font-bold tracking-tight">WeeGen</h1>
+        </div>
+        <div class="flex items-center gap-4">
+            <!-- Theme Toggle -->
+            <button onclick="toggleTheme()" class="p-2 rounded-lg static-panel hover:border-indigo-500 transition-colors" title="Toggle Theme">
+                <!-- Sun Icon (for Dark Mode) -->
+                <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-400 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+                <!-- Moon Icon (for Light Mode) -->
+                <svg id="icon-moon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+            </button>
+            <div class="text-xs font-medium text-slate-400 border border-slate-700/50 px-3 py-1 rounded-full static-panel">
+                v4.0 Ultimate
+            </div>
+        </div>
+    </nav>
+
+    <main class="w-full max-w-6xl mx-auto px-4">
+        
+        <!-- Tab Navigation -->
+        <div class="flex flex-wrap gap-2 mb-8 border-b border-slate-700/50 pb-1">
+            <button onclick="switchTab('single')" id="btn-single" class="tab-active px-6 py-3 rounded-t-lg font-bold text-sm border-x border-t transition-colors">
+                Single Generator
+            </button>
+            <button onclick="switchTab('bulk')" id="btn-bulk" class="tab-inactive px-6 py-3 rounded-t-lg font-bold text-sm border-x border-t transition-colors flex items-center gap-2">
+                Bulk Suite
+                <span class="bg-indigo-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">New</span>
+            </button>
+            <button onclick="switchTab('history')" id="btn-history" class="tab-inactive px-6 py-3 rounded-t-lg font-bold text-sm border-x border-t transition-colors">
+                History
+            </button>
+        </div>
+
+        <!-- ========================= TAB 1: SINGLE GENERATOR ========================= -->
+        <div id="tab-single" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left Column: Config -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Core Settings -->
+                <section class="static-panel rounded-2xl p-6 md:p-8">
+                    <div class="flex items-center gap-3 mb-6 border-b border-gray-700/50 pb-4">
+                        <div class="p-2 bg-indigo-500/10 rounded-lg text-indigo-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
+                        </div>
+                        <h2 class="text-xl font-bold">Core Configuration</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="col-span-2 relative">
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Target URL <span class="text-rose-500">*</span></label>
+                            <input type="url" id="targetUrl" onblur="fetchMetadata(this.value)" placeholder="https://" class="static-input w-full rounded-xl px-4 py-3 placeholder-gray-500">
+                            <p class="text-[10px] text-gray-500 mt-1 flex items-center gap-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                                Tip: Paste URL and click away to auto-fetch Name & Icon
+                            </p>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Website Name</label>
+                            <input type="text" id="siteName" placeholder="Auto-fetched..." class="static-input w-full rounded-xl px-4 py-3 placeholder-gray-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Icon URL</label>
+                            <div class="relative">
+                                <input type="url" id="iconUrl" placeholder="https://..." class="static-input w-full rounded-xl px-4 py-3 pr-12 placeholder-gray-500">
+                                <img id="iconPreview" src="" class="absolute right-3 top-2.5 h-6 w-6 object-contain rounded opacity-80 bg-slate-800" onerror="this.style.display='none'">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Advanced Features -->
+                <section class="static-panel rounded-2xl p-6 md:p-8">
+                    <div class="flex items-center gap-3 mb-6 border-b border-gray-700/50 pb-4">
+                        <div class="p-2 bg-indigo-500/10 rounded-lg text-indigo-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" /></svg>
+                        </div>
+                        <h2 class="text-xl font-bold">10+ Advanced Options</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Group 1: Visuals -->
+                        <div class="space-y-4">
+                            <h3 class="text-sm font-semibold text-indigo-500 uppercase tracking-widest border-b border-gray-700/30 pb-1">Appearance</h3>
+                            
+                            <!-- Opt 1: Colors -->
+                            <div class="flex gap-2">
+                                <div class="w-1/3">
+                                    <label class="block text-[9px] font-bold text-gray-500 mb-1">BG</label>
+                                    <input type="color" id="bgColor" value="#0f172a" class="w-full h-8 rounded cursor-pointer static-input p-0.5">
+                                </div>
+                                <div class="w-1/3">
+                                    <label class="block text-[9px] font-bold text-gray-500 mb-1">TEXT</label>
+                                    <input type="color" id="textColor" value="#ffffff" class="w-full h-8 rounded cursor-pointer static-input p-0.5">
+                                </div>
+                                <div class="w-1/3">
+                                    <label class="block text-[9px] font-bold text-gray-500 mb-1">LOADER</label>
+                                    <input type="color" id="loaderColor" value="#6366f1" class="w-full h-8 rounded cursor-pointer static-input p-0.5">
+                                </div>
+                            </div>
+
+                            <!-- Opt 2: Font Family -->
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-500 mb-1">Font Family</label>
+                                <select id="fontFamily" class="static-input w-full rounded-lg px-3 py-2 text-xs">
+                                    <option value="sans-serif">Sans Serif (Modern)</option>
+                                    <option value="serif">Serif (Classic)</option>
+                                    <option value="monospace">Monospace (Code)</option>
+                                    <option value="'Courier New', Courier, monospace">Courier</option>
+                                </select>
+                            </div>
+
+                            <!-- Opt 3: Custom Message -->
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-500 mb-1">Redirect Message</label>
+                                <input type="text" id="redirectMsg" value="Redirecting..." class="static-input w-full rounded-lg px-3 py-2 text-xs placeholder-gray-600">
+                            </div>
+
+                            <!-- Opt 4: Loader Toggle -->
+                             <div class="flex items-center justify-between p-2 static-input rounded-lg">
+                                <span class="text-xs font-medium">Show Spinner</span>
+                                <input type="checkbox" id="showLoader" checked class="accent-indigo-500 w-4 h-4">
+                            </div>
+                        </div>
+
+                        <!-- Group 2: Logic & SEO -->
+                        <div class="space-y-4">
+                            <h3 class="text-sm font-semibold text-indigo-500 uppercase tracking-widest border-b border-gray-700/30 pb-1">Logic & SEO</h3>
+                            
+                            <!-- Opt 5: Password -->
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-500 mb-1">Password (Optional)</label>
+                                <input type="text" id="passwordProtect" placeholder="Secret..." class="static-input w-full rounded-lg px-3 py-2 text-xs border-l-4 border-l-rose-500/50 focus:border-l-rose-500">
+                            </div>
+                            
+                            <!-- Opt 6: Delay -->
+                             <div>
+                                <label class="block text-[10px] font-bold text-gray-500 mb-1">Delay: <span id="delayVal" class="text-indigo-400">0s</span></label>
+                                <input type="range" id="delayTime" min="0" max="10" value="0" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-500">
+                            </div>
+
+                            <!-- Opt 7 & 8: Meta Tags -->
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="block text-[9px] font-bold text-gray-500 mb-1">Meta Desc</label>
+                                    <input type="text" id="metaDesc" placeholder="SEO Desc" class="static-input w-full rounded-lg px-2 py-1 text-xs">
+                                </div>
+                                <div>
+                                    <label class="block text-[9px] font-bold text-gray-500 mb-1">Keywords</label>
+                                    <input type="text" id="metaKeys" placeholder="tag1, tag2" class="static-input w-full rounded-lg px-2 py-1 text-xs">
+                                </div>
+                            </div>
+
+                            <!-- Opt 9: Custom CSS -->
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-500 mb-1">Custom CSS</label>
+                                <textarea id="customCSS" placeholder="body { ... }" class="static-input w-full rounded-lg px-2 py-1 text-xs h-10 font-mono"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Right Column: Action -->
+            <div class="lg:col-span-1 space-y-6">
+                <div class="static-panel rounded-2xl p-6 sticky top-6">
+                    <h3 class="text-lg font-bold mb-4">Generate</h3>
+                    <p class="text-sm text-gray-500 mb-6">Create a standalone HTML file.</p>
+                    <button onclick="triggerSingleGeneration()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-indigo-500/20 flex items-center justify-center gap-2">
+                        GENERATE FILE
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>
+                    </button>
+                    <p id="statusMessage" class="text-center text-xs font-medium mt-4 h-4"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================= TAB 2: BULK SUITE ========================= -->
+        <div id="tab-bulk" class="hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                <!-- Toolbar -->
+                <div class="lg:col-span-4 flex flex-wrap gap-4 mb-2">
+                     <label class="cursor-pointer bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+                        Import Bookmarks (HTML)
+                        <input type="file" class="hidden" accept=".html" onchange="importBookmarks(this)">
+                    </label>
+                    <button onclick="exportBookmarks()" class="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                        Export as Bookmarks
+                    </button>
+                     <button onclick="addBulkRow()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2 transition-colors ml-auto">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                        Add Row
+                    </button>
+                </div>
+
+                <!-- Bulk Table -->
+                <div class="lg:col-span-3 static-panel rounded-2xl overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm text-gray-500">
+                            <thead class="bg-slate-900/50 text-xs uppercase font-bold text-gray-400">
+                                <tr>
+                                    <th class="px-6 py-4">Website Name</th>
+                                    <th class="px-6 py-4">Target URL</th>
+                                    <th class="px-6 py-4 w-10">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bulkTableBody" class="divide-y divide-gray-700/50">
+                                <!-- Rows will be injected here -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="emptyBulkState" class="p-12 text-center">
+                        <p class="text-gray-500 mb-2">List is empty</p>
+                        <p class="text-xs text-gray-600">Import bookmarks or click "Add Row" to start</p>
+                    </div>
+                </div>
+
+                <!-- Bulk Actions -->
+                <div class="lg:col-span-1 space-y-6">
+                    <div class="static-panel rounded-2xl p-6 sticky top-6">
+                        <h3 class="text-lg font-bold mb-2">Batch Process</h3>
+                        <p class="text-xs text-gray-500 mb-4">Browser will request permission to download multiple files.</p>
+                        
+                        <div class="bg-indigo-900/20 border border-indigo-900/50 p-3 rounded-lg mb-4 text-xs text-indigo-300">
+                            <p><strong>Note:</strong> Files will be generated using default styling settings.</p>
+                        </div>
+
+                        <button onclick="generateBulkFiles()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-4 rounded-xl shadow-md flex items-center justify-center gap-2 transition-colors">
+                            DOWNLOAD ALL
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>
+                        </button>
+                         <button onclick="clearBulkList()" class="w-full mt-3 bg-rose-900/20 hover:bg-rose-900 text-rose-300 font-bold py-3 rounded-xl text-xs transition-colors border border-rose-900/50">
+                            Clear List
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================= TAB 3: HISTORY ========================= -->
+        <div id="tab-history" class="hidden">
+             <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold">Generation History</h2>
+                <button onclick="clearHistory()" class="text-xs text-rose-400 hover:text-rose-300 font-bold px-3 py-1 border border-rose-900/50 rounded hover:bg-rose-900/20">Clear All</button>
+            </div>
+            
+            <div class="static-panel rounded-2xl overflow-hidden min-h-[300px]">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm text-gray-500">
+                        <thead class="bg-slate-900/50 text-xs uppercase font-bold text-gray-400">
+                            <tr>
+                                <th class="px-6 py-4">Time</th>
+                                <th class="px-6 py-4">Name</th>
+                                <th class="px-6 py-4">URL</th>
+                                <th class="px-6 py-4 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody" class="divide-y divide-gray-700/50">
+                             <!-- Rows injected here -->
+                        </tbody>
+                    </table>
+                </div>
+                 <div id="emptyHistoryState" class="p-12 text-center hidden">
+                    <p class="text-gray-500">No history yet.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="static-panel rounded-xl p-6 text-center space-y-3 mt-12 bg-indigo-900/5">
+            <p class="text-xs text-gray-500 font-medium">WeeGen By NaroTech India</p>
+            <a href="https://narotech.netlify.app" target="_blank" class="inline-block py-2 px-6 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-xs font-bold text-indigo-400 transition-colors">
+                VISIT NAROTECH
+            </a>
+        </div>
+
+    </main>
+
+    <!-- Custom Modal Structure -->
+    <div id="customModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-sm">
+        <div class="static-panel bg-[#1e293b] rounded-2xl p-6 max-w-sm w-full mx-4 shadow-2xl transform transition-all modal-enter border border-slate-600">
+            <h3 id="modalTitle" class="text-lg font-bold mb-2">Notification</h3>
+            <p id="modalMessage" class="text-sm text-gray-400 mb-6">Message content goes here...</p>
+            <div class="flex justify-end gap-3" id="modalButtons">
+                <button id="modalCancel" class="hidden px-4 py-2 rounded-lg text-xs font-bold text-gray-400 hover:text-white hover:bg-slate-700 transition-colors">Cancel</button>
+                <button id="modalOk" class="px-6 py-2 rounded-lg text-xs font-bold bg-indigo-600 text-white hover:bg-indigo-500 transition-colors shadow-lg shadow-indigo-500/20">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // --- Theme System ---
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.classList.toggle('dark');
+            
+            // Toggle Icons
+            const sun = document.getElementById('icon-sun');
+            const moon = document.getElementById('icon-moon');
+            
+            if (isDark) {
+                sun.classList.add('hidden');
+                moon.classList.remove('hidden');
+            } else {
+                sun.classList.remove('hidden');
+                moon.classList.add('hidden');
+            }
+        }
+
+        // --- Modal System ---
+        function showModal(title, message, isConfirm = false) {
+            return new Promise((resolve) => {
+                const modal = document.getElementById('customModal');
+                const titleEl = document.getElementById('modalTitle');
+                const msgEl = document.getElementById('modalMessage');
+                const cancelBtn = document.getElementById('modalCancel');
+                const okBtn = document.getElementById('modalOk');
+
+                // Set Content
+                titleEl.textContent = title;
+                msgEl.textContent = message;
+
+                // Configure Buttons
+                if (isConfirm) {
+                    cancelBtn.classList.remove('hidden');
+                    okBtn.textContent = 'Confirm';
+                } else {
+                    cancelBtn.classList.add('hidden');
+                    okBtn.textContent = 'OK';
+                }
+
+                // Show Modal
+                modal.classList.remove('hidden');
+
+                // Handlers
+                const close = (result) => {
+                    modal.classList.add('hidden');
+                    okBtn.onclick = null;
+                    cancelBtn.onclick = null;
+                    resolve(result);
+                };
+
+                okBtn.onclick = () => close(true);
+                cancelBtn.onclick = () => close(false);
+            });
+        }
+
+        // --- Tab Management ---
+        function switchTab(tabId) {
+            ['single', 'bulk', 'history'].forEach(id => {
+                document.getElementById(`tab-${id}`).classList.add('hidden');
+                const btn = document.getElementById(`btn-${id}`);
+                btn.classList.remove('tab-active');
+                btn.classList.add('tab-inactive');
+                if(id === 'bulk') btn.querySelector('span').classList.replace('bg-indigo-500', 'bg-slate-600'); 
+            });
+
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`btn-${tabId}`);
+            activeBtn.classList.remove('tab-inactive');
+            activeBtn.classList.add('tab-active');
+            if(tabId === 'bulk') activeBtn.querySelector('span').classList.replace('bg-slate-600', 'bg-indigo-500');
+
+            if(tabId === 'history') renderHistory();
+        }
+
+        // --- Live Preview Listeners ---
+        const iconInput = document.getElementById('iconUrl');
+        const iconPreview = document.getElementById('iconPreview');
+        const delayRange = document.getElementById('delayTime');
+        const delayVal = document.getElementById('delayVal');
+
+        iconInput.addEventListener('input', (e) => {
+            if(e.target.value) { iconPreview.src = e.target.value; iconPreview.style.display = 'block'; }
+            else { iconPreview.style.display = 'none'; }
+        });
+        delayRange.addEventListener('input', (e) => delayVal.textContent = e.target.value + 's');
+
+        // --- Feature 1: Intelligent Name Fetcher ---
+        async function fetchMetadata(url) {
+            if(!url) return;
+            if(!url.startsWith('http')) {
+                url = 'https://' + url;
+                document.getElementById('targetUrl').value = url;
+            }
+
+            const nameInput = document.getElementById('siteName');
+            const iconInput = document.getElementById('iconUrl');
+
+            if(nameInput.value.trim() !== "") return;
+
+            nameInput.placeholder = "Fetching details...";
+            
+            try {
+                const apiUrl = `https://api.microlink.io/?url=${encodeURIComponent(url)}`;
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                if(data.status === 'success') {
+                    nameInput.value = data.data.title || extractHostname(url);
+                    if(data.data.logo && data.data.logo.url) {
+                        iconInput.value = data.data.logo.url;
+                        iconPreview.src = data.data.logo.url;
+                        iconPreview.style.display = 'block';
+                    }
+                } else {
+                    nameInput.value = extractHostname(url);
+                }
+            } catch (e) {
+                console.error("Fetch failed", e);
+                nameInput.value = extractHostname(url);
+            }
+            nameInput.placeholder = "Website Name";
+        }
+
+        function extractHostname(url) {
+            try {
+                const safeUrl = url.startsWith('http') ? url : 'https://' + url;
+                const hostname = new URL(safeUrl).hostname;
+                return hostname.replace('www.', '').split('.')[0].toUpperCase();
+            } catch {
+                return "My Website";
+            }
+        }
+
+        // --- Feature 2: Generator Logic (Shared) ---
+        async function createWeeGenFile(config) {
+            const data = config || {
+                url: document.getElementById('targetUrl').value.trim(),
+                name: document.getElementById('siteName').value.trim() || 'WeeGen Site',
+                icon: document.getElementById('iconUrl').value.trim(),
+                
+                // Advanced Options
+                bg: document.getElementById('bgColor').value,
+                text: document.getElementById('textColor').value,
+                loaderColor: document.getElementById('loaderColor').value,
+                font: document.getElementById('fontFamily').value,
+                redirectMsg: document.getElementById('redirectMsg').value || 'Redirecting...',
+                showLoader: document.getElementById('showLoader').checked,
+                
+                delay: document.getElementById('delayTime').value,
+                password: document.getElementById('passwordProtect').value,
+                
+                // SEO Options
+                metaDesc: document.getElementById('metaDesc').value,
+                metaKeys: document.getElementById('metaKeys').value,
+                customCSS: document.getElementById('customCSS').value,
+            };
+
+            if(!data.url) {
+                showModal("Validation Error", "Please enter a valid Target URL.");
+                return;
+            }
+            
+            if(!data.url.startsWith('http')) data.url = 'https://' + data.url;
+            if(!config) addToHistory(data);
+
+            // Sanitize & Prepare
+            const safeName = data.name.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            const safePass = data.password ? data.password.replace(/"/g, '\\"') : '';
+            const safeUrl = data.url;
+            const metaBlock = data.metaDesc ? `<meta name="description" content="${data.metaDesc.replace(/"/g, '&quot;')}">` : '';
+            const keyBlock = data.metaKeys ? `<meta name="keywords" content="${data.metaKeys.replace(/"/g, '&quot;')}">` : '';
+
+            // Construct HTML
+            let scriptLogic = '';
+            if (data.password) {
+                scriptLogic = `window.onload = function() { var pass = prompt("Enter Password:"); if(pass === "${safePass}") { setTimeout(function(){ window.location.href = "${safeUrl}"; }, ${data.delay * 1000}); } else { document.body.innerHTML = '<h2 style="margin-top:50px">Access Denied</h2><button onclick="location.reload()">Retry</button>'; } }`;
+            } else {
+                scriptLogic = `window.onload = function() { setTimeout(function(){ window.location.href = "${safeUrl}"; }, ${data.delay * 1000}); }`;
+            }
+
+            const fileContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${safeName}</title><link rel="icon" href="${data.icon}">
+${metaBlock}
+${keyBlock}
+${!data.password ? `<meta http-equiv="refresh" content="${parseInt(data.delay) + 1}; url=${safeUrl}">` : ''}
+<style>
+body { font-family: ${data.font}; background-color: ${data.bg}; color: ${data.text}; height: 100vh; margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+.loader { border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid ${data.loaderColor || data.text}; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 20px; display: ${data.showLoader ? 'block' : 'none'}; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+${data.customCSS || ''}
+</style>
+<script>${scriptLogic}<\/script>
+</head>
+<body><div class="loader"></div><h2>${data.redirectMsg}</h2><p>${safeName}</p></body></html>`;
+
+            const fileName = `${data.name.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.html`;
+            
+            try {
+                if (!config && window.showSaveFilePicker) {
+                    const handle = await window.showSaveFilePicker({
+                        suggestedName: fileName,
+                        types: [{ description: 'WeeGen HTML', accept: { 'text/html': ['.html'] } }],
+                    });
+                    const writable = await handle.createWritable();
+                    await writable.write(fileContent);
+                    await writable.close();
+                } else {
+                    const blob = new Blob([fileContent], { type: 'text/html' });
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = fileName;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
+            } catch (err) {
+                if(err.name !== 'AbortError') console.error(err);
+            }
+            
+            return new Promise(resolve => setTimeout(resolve, 500)); 
+        }
+
+        function triggerSingleGeneration() {
+            const url = document.getElementById('targetUrl').value.trim();
+            if(!url) {
+                showModal("Validation Error", "Please enter a valid Target URL.");
+                return;
+            }
+
+            const statusMsg = document.getElementById('statusMessage');
+            statusMsg.innerText = "Generating...";
+            createWeeGenFile().then(() => statusMsg.innerText = "Done!");
+            setTimeout(() => statusMsg.innerText = "", 3000);
+        }
+
+        // --- Feature 3: Bulk Suite ---
+        let bulkData = [];
+
+        function renderBulkTable() {
+            const tbody = document.getElementById('bulkTableBody');
+            const emptyState = document.getElementById('emptyBulkState');
+            tbody.innerHTML = '';
+            
+            if(bulkData.length === 0) {
+                emptyState.style.display = 'block';
+                return;
+            }
+            emptyState.style.display = 'none';
+
+            bulkData.forEach((row, index) => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-gray-700/10 transition-colors";
+                tr.innerHTML = `
+                    <td class="px-6 py-2"><input type="text" value="${row.name}" onchange="updateBulk(${index}, 'name', this.value)" class="bg-transparent border border-gray-600/50 rounded px-2 py-1 w-full text-inherit focus:border-indigo-500 outline-none"></td>
+                    <td class="px-6 py-2"><input type="text" value="${row.url}" onchange="updateBulk(${index}, 'url', this.value)" class="bg-transparent border border-gray-600/50 rounded px-2 py-1 w-full text-indigo-400 focus:border-indigo-500 outline-none"></td>
+                    <td class="px-6 py-2 text-right">
+                        <button onclick="removeBulkRow(${index})" class="text-rose-500 hover:text-rose-400 font-bold text-xs p-2 hover:bg-rose-900/20 rounded">✕</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function addBulkRow(name = '', url = '') {
+            bulkData.push({ name: name || 'New Site', url: url || 'https://' });
+            renderBulkTable();
+        }
+
+        function updateBulk(index, field, value) {
+            bulkData[index][field] = value;
+        }
+
+        function removeBulkRow(index) {
+            bulkData.splice(index, 1);
+            renderBulkTable();
+        }
+
+        async function clearBulkList() {
+            if(await showModal("Confirm Action", "Are you sure you want to clear the entire bulk list?", true)) {
+                bulkData = [];
+                renderBulkTable();
+            }
+        }
+
+        async function generateBulkFiles() {
+            if(bulkData.length === 0) {
+                showModal("Notice", "The bulk list is empty. Add some rows first.");
+                return;
+            }
+            
+            // Defaults for bulk
+            const defaults = {
+                bg: '#0f172a', text: '#ffffff', loaderColor: '#6366f1', showLoader: true, delay: 0, password: '', icon: '',
+                font: 'sans-serif', redirectMsg: 'Redirecting...'
+            };
+
+            for (const item of bulkData) {
+                const config = { ...defaults, ...item };
+                await createWeeGenFile(config);
+            }
+            showModal("Success", `Batch Complete! Generated ${bulkData.length} files. Please check your downloads folder.`);
+        }
+
+        // --- Feature 4: Bookmarks Import/Export ---
+        function importBookmarks(input) {
+            const file = input.files[0];
+            if(!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const content = e.target.result;
+                const regex = /<A[^>]+HREF=["']([^"']+)["'][^>]*>([^<]+)<\/A>/gi;
+                let match;
+                let count = 0;
+                while ((match = regex.exec(content)) !== null) {
+                    addBulkRow(match[2], match[1]);
+                    count++;
+                }
+                showModal("Import Success", `Successfully imported ${count} bookmarks into your bulk list!`);
+            };
+            reader.readAsText(file);
+            input.value = '';
+        }
+
+        function exportBookmarks() {
+            if(bulkData.length === 0) {
+                showModal("Export Failed", "There is nothing to export. Add some items to the list first.");
+                return;
+            }
+            
+            let html = `<!DOCTYPE NETSCAPE-Bookmark-file-1>\n<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">\n<TITLE>WeeGen Bookmarks</TITLE>\n<H1>Bookmarks</H1>\n<DL><p>\n`;
+            
+            bulkData.forEach(item => {
+                html += `    <DT><A HREF="${item.url}">${item.name}</A>\n`;
+            });
+            
+            html += `</DL><p>`;
+            
+            const blob = new Blob([html], { type: 'text/html' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'weegen_bookmarks.html';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // --- Feature 5: History (LocalStorage) ---
+        function getHistory() {
+            return JSON.parse(localStorage.getItem('weeGenHistory') || '[]');
+        }
+
+        function addToHistory(item) {
+            const history = getHistory();
+            const newItem = {
+                ...item,
+                timestamp: new Date().toLocaleString()
+            };
+            history.unshift(newItem);
+            if(history.length > 50) history.pop();
+            localStorage.setItem('weeGenHistory', JSON.stringify(history));
+            if(!document.getElementById('tab-history').classList.contains('hidden')) {
+                renderHistory();
+            }
+        }
+
+        function renderHistory() {
+            const history = getHistory();
+            const tbody = document.getElementById('historyTableBody');
+            const emptyState = document.getElementById('emptyHistoryState');
+            tbody.innerHTML = '';
+
+            if(history.length === 0) {
+                emptyState.style.display = 'block';
+                return;
+            }
+            emptyState.style.display = 'none';
+
+            history.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-gray-700/10 transition-colors border-b border-gray-700/50";
+                tr.innerHTML = `
+                    <td class="px-6 py-3 text-xs text-gray-500 font-mono">${item.timestamp}</td>
+                    <td class="px-6 py-3 font-bold">${item.name}</td>
+                    <td class="px-6 py-3 text-indigo-400 truncate max-w-[150px]">${item.url}</td>
+                    <td class="px-6 py-3 text-right">
+                        <button onclick='loadFromHistory(${JSON.stringify(item)})' class="text-xs text-indigo-400 hover:text-indigo-300 mr-2 border border-gray-600 px-2 py-1 rounded">Edit</button>
+                        <button onclick='createWeeGenFile(${JSON.stringify(item)})' class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-2 py-1 rounded">Redownload</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function loadFromHistory(item) {
+            switchTab('single');
+            document.getElementById('targetUrl').value = item.url;
+            document.getElementById('siteName').value = item.name;
+            document.getElementById('iconUrl').value = item.icon || '';
+            document.getElementById('bgColor').value = item.bg;
+            document.getElementById('textColor').value = item.text;
+            document.getElementById('passwordProtect').value = item.password || '';
+            document.getElementById('delayTime').value = item.delay;
+            
+            // New Fields
+            if(item.loaderColor) document.getElementById('loaderColor').value = item.loaderColor;
+            if(item.font) document.getElementById('fontFamily').value = item.font;
+            if(item.redirectMsg) document.getElementById('redirectMsg').value = item.redirectMsg;
+            if(item.metaDesc) document.getElementById('metaDesc').value = item.metaDesc;
+            
+            if(item.icon) {
+                 document.getElementById('iconPreview').src = item.icon;
+                 document.getElementById('iconPreview').style.display = 'block';
+            }
+        }
+
+        async function clearHistory() {
+            if(await showModal("Confirm Action", "Are you sure you want to clear your generation history?", true)) {
+                localStorage.removeItem('weeGenHistory');
+                renderHistory();
+            }
+        }
+
+        addBulkRow(); 
+    </script>
+</body>
+</html>
